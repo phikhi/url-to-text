@@ -1,6 +1,7 @@
 {
     "name": "phikhi/url-to-text",
     "description": "Extract texts from an url",
+    "keywords": ["DOM", "parser", "text", "extract", "url"],
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -10,10 +11,13 @@
     },
     "authors": [
         {
-            "name": "phikhi",
+            "name": "Philippe Khill",
             "email": "hello@phikhi.com"
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.1"
+    }
 }
