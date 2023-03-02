@@ -3,6 +3,12 @@
 > Extract any texts from a distant HTML page
 > 🚧 WORK IN PROGRESS (do not use) 🚧
 
+## Installation
+
+```bash
+composer require phikhi/url-to-text
+```
+
 ## Usage
 
 ### Basic usage
