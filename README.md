@@ -17,6 +17,7 @@ use Phikhi\UrlToText\UrlToText;
 
 $text = (new UrlToText())
     ->from('https://phikhi.com')
+    ->extract()
     ->toArray();
 /*
 [
@@ -28,11 +29,13 @@ $text = (new UrlToText())
 
 $text = (new UrlToText())
     ->from('https://phikhi.com')
+    ->extract()
     ->toJson();
 // ['lorem ipsum dolor sit amet', 'non gloriam sine audentes', '...'];
 
 $text = (new UrlToText())
     ->from('https://phikhi.com')
+    ->extract()
     ->toText();
 /*
 lorem ipsum dolor sit amet
@@ -48,6 +51,7 @@ You can customize the tags you want to parse
 $text = (new UrlToText())
     ->from('https://phikhi.com')
     ->allow(['div', 'span']) // will add these tags to the existing allowed tags array (H*, p, li, a).
+    ->extract()
     ->toArray();
 ```
 
@@ -56,6 +60,7 @@ If you want to overwrite the allowed tags array instead of extending it, you can
 $text = (new UrlToText())
     ->from('https://phikhi.com')
     ->allow(['div', 'span'], overwrite: true) // will replace the existing allowed tags array with this one.
+    ->extract()
     ->toArray();
 ```
 
@@ -65,6 +70,7 @@ But you can still customize them if you need with the `deny()` method.
 $text = (new UrlToText())
     ->from('https://phikhi.com')
     ->deny(['svg']) // will add the `svg` tag to the existing denied tags array (script, style).
+    ->extract()
     ->toArray();
 ```
 
@@ -73,5 +79,6 @@ If you want to overwrite the denied tags array instead of extending it, you can 
 $text = (new UrlToText())
     ->from('https://phikhi.com')
     ->deny(['svg'], overwrite: true) // will replace the existing denied tags array with this one.
+    ->extract()
     ->toArray();
 ```

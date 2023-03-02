@@ -30,6 +30,12 @@ final class UrlToText
      */
     private array $extractedTexts = [];
 
+    public function __construct()
+    {
+        $this->allow(AllowedTags::values());
+        $this->deny(DeniedTags::values());
+    }
+
     public function from(string $url): static
     {
         if ($url === '' || $url === '0') {
@@ -66,9 +72,11 @@ final class UrlToText
             throw new TagsNotProvidedException();
         }
 
+        $class = '\\Phikhi\\UrlToText\\Enums\\'.ucfirst($destinationArray);
+
         $this->{$destinationArray} = $overwrite
             ? $tags
-            : array_merge(ucfirst($destinationArray)::values(), $tags);
+            : array_merge($class::values(), $tags);
 
         $this->{$destinationArray} = array_unique($this->{$destinationArray});
 
@@ -81,19 +89,11 @@ final class UrlToText
 
         libxml_use_internal_errors(true);
 
-        if (empty($this->allowedTags)) {
-            $this->allow(AllowedTags::values());
-        }
-
-        if (empty($this->deniedTags)) {
-            $this->deny(DeniedTags::values());
-        }
-
         $dom->loadHTML($this->getPageContent());
         $dom = $this->cleanDom($dom);
 
         $xpath = new DOMXPath($dom);
-        $tags = $xpath->query($this->getAllowedTags());
+        $tags = $xpath->query($this->getAllowedTagsAsString());
 
         if ($tags === false) {
             return $this;
@@ -108,11 +108,7 @@ final class UrlToText
 
     private function getPageContent(): string
     {
-        $pageContent = file_get_contents(
-            $this->url,
-            false,
-            stream_context_create(StreamContext::options())
-        );
+        $pageContent = UrlContent::fetch($this->url);
 
         return $pageContent === false ? '' : $pageContent;
     }
@@ -120,7 +116,7 @@ final class UrlToText
     private function cleanDom(DOMDocument $dom): DOMDocument
     {
         foreach ($dom->getElementsByTagName('*') as $element) {
-            if ($element->parentNode !== null && in_array($element->nodeName, $this->deniedTags)) {
+            if ($element->parentNode !== null && in_array($element->nodeName, $this->getDeniedTags())) {
                 $element->parentNode->removeChild($element);
             }
         }
@@ -128,11 +124,27 @@ final class UrlToText
         return $dom;
     }
 
-    private function getAllowedTags(): string
+    /**
+     * @return mixed[]
+     */
+    public function getAllowedTags(): array
+    {
+        return $this->allowedTags;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getDeniedTags(): array
+    {
+        return $this->deniedTags;
+    }
+
+    private function getAllowedTagsAsString(): string
     {
         $tagsArray = [];
 
-        foreach ($this->allowedTags as $tag) {
+        foreach ($this->getAllowedTags() as $tag) {
             if (! is_string($tag)) {
                 continue;
             }
