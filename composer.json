@@ -1,0 +1,19 @@
+{
+    "name": "phikhi/url-to-text",
+    "description": "Extract texts from an url",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Phikhi\\UrlToText\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "phikhi",
+            "email": "hello@phikhi.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
