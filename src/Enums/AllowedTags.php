@@ -12,7 +12,7 @@ enum AllowedTags: string
     case H4 = 'h4';
     case H5 = 'h5';
     case H6 = 'h6';
-    case P  = 'p';
+    case P = 'p';
     case LI = 'li';
-    case A  = 'a';
+    case A = 'a';
 }
