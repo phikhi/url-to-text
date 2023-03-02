@@ -27,7 +27,7 @@ final class UrlToText
 
     protected array $extractedTexts = [];
 
-    public function __construct(?string $url, ?array $allowedTags = null, ?array $deniedTags = null, ?array $streamContextOptions = null) {
+    public function __construct(?string $url = null, ?array $allowedTags = null, ?array $deniedTags = null, ?array $streamContextOptions = null) {
         if ($url) {
             $this->from($url);
         }
