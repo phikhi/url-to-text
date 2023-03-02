@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Phikhi\UrlToText;
 
-use DOMXPath;
 use DOMDocument;
-use Phikhi\UrlToText\StreamContext;
-use Phikhi\UrlToText\Exceptions\UrlNotProvidedException;
+use DOMXPath;
 use Phikhi\UrlToText\Exceptions\TagsNotProvidedException;
+use Phikhi\UrlToText\Exceptions\UrlNotProvidedException;
 
 final class UrlToText
 {
@@ -27,7 +26,8 @@ final class UrlToText
 
     protected array $extractedTexts = [];
 
-    public function __construct(?string $url = null, ?array $allowedTags = null, ?array $deniedTags = null, ?array $streamContextOptions = null) {
+    public function __construct(?string $url = null, ?array $allowedTags = null, ?array $deniedTags = null, ?array $streamContextOptions = null)
+    {
         if ($url) {
             $this->from($url);
         }
@@ -49,7 +49,7 @@ final class UrlToText
 
     public function from(string $url): UrlToText
     {
-        if (!$url) {
+        if (! $url) {
             throw new UrlNotProvidedException();
         }
 
@@ -70,7 +70,7 @@ final class UrlToText
 
     private function filterTags(array $tags, string $destinationArray, $overwrite = false): UrlToText
     {
-        if (!$tags) {
+        if (! $tags) {
             throw new TagsNotProvidedException();
         }
 
@@ -129,7 +129,7 @@ final class UrlToText
 
     private function cleanTextContent(string $textContent): string
     {
-        return preg_replace("/\s{2,}/", " ", trim(str_replace("\n", "", $textContent)));
+        return preg_replace("/\s{2,}/", ' ', trim(str_replace("\n", '', $textContent)));
     }
 
     public function toArray(): array
