@@ -75,12 +75,3 @@ $text = (new UrlToText())
     ->deny(['svg'], overwrite: true) // will replace the existing denied tags array with this one.
     ->toArray();
 ```
-
-If you prefer, you can configure the extraction directly from the `__construct()` method
-```php
-$text = (new UrlToText(
-    url: 'https://phikhi.com',
-    allowedTags: ['div', 'span'], // will be merged
-    deniedTags: ['svg'] // will be merged
-))->toArray();
-```

@@ -11,43 +11,20 @@ use Phikhi\UrlToText\Exceptions\UrlNotProvidedException;
 
 final class UrlToText
 {
-    protected string $url;
+    private string $url;
 
-    protected array $allowedTags = [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'p', 'li', 'a',
-    ];
+    protected array $allowedTags;
 
-    protected array $deniedTags = [
-        'style', 'script',
-    ];
+    protected array $deniedTags;
 
-    protected array $streamContextOptions;
+    private array $extractedTexts = [];
 
-    protected array $extractedTexts = [];
-
-    public function __construct(?string $url = null, ?array $allowedTags = null, ?array $deniedTags = null, ?array $streamContextOptions = null)
+    public function __construct(): static
     {
-        if ($url) {
-            $this->from($url);
-        }
-
-        if (is_array($allowedTags)) {
-            $this->allow($allowedTags);
-        }
-
-        if (is_array($deniedTags)) {
-            $this->deny($deniedTags);
-        }
-
-        if (is_array($streamContextOptions)) {
-            $this->streamContextOptions = $streamContextOptions;
-        }
-
         return $this;
     }
 
-    public function from(string $url): UrlToText
+    public function from(string $url): static
     {
         if (! $url) {
             throw new UrlNotProvidedException();
@@ -58,41 +35,38 @@ final class UrlToText
         return $this;
     }
 
-    public function allow(array $tags, $overwrite = false): UrlToText
+    public function allow(array $tags, bool $overwrite = false): UrlToText
     {
         return $this->filterTags($tags, 'allowedTags', $overwrite);
     }
 
-    public function deny(array $tags, $overwrite = false): UrlToText
+    public function deny(array $tags, bool $overwrite = false): UrlToText
     {
         return $this->filterTags($tags, 'deniedTags', $overwrite);
     }
 
-    private function filterTags(array $tags, string $destinationArray, $overwrite = false): UrlToText
+    private function filterTags(array $tags, string $destinationArray, bool $overwrite = false): static
     {
         if (! $tags) {
             throw new TagsNotProvidedException();
         }
 
-        if ($overwrite) {
-            $this->{$destinationArray} = $tags;
-        } else {
-            $this->{$destinationArray} = array_merge($this->{$destinationArray}, $tags);
-        }
+        $this->{$destinationArray} = $overwrite
+            ? $tags
+            : array_merge(ucfirst($destinationArray)::values(), $tags);
 
         $this->{$destinationArray} = array_unique($this->{$destinationArray});
 
         return $this;
     }
 
-    public function extract(): UrlToText
+    public function extract(): static
     {
         $dom = new DOMDocument();
 
-        // Disable libxml errors
         libxml_use_internal_errors(true);
 
-        $dom->loadHTML(file_get_contents($this->url, false, StreamContext::create($this->streamContextOptions)));
+        $dom->loadHTML(file_get_contents($this->url, false, StreamContext::create()));
         $dom = $this->cleanDom($dom);
 
         $xpath = new DOMXPath($dom);
@@ -127,11 +101,14 @@ final class UrlToText
         return implode(' | ', $tagsArray);
     }
 
-    private function cleanTextContent(string $textContent): string
+    private function cleanTextContent(string $textContent): ?string
     {
         return preg_replace("/\s{2,}/", ' ', trim(str_replace("\n", '', $textContent)));
     }
 
+    /**
+     * @return mixed[]
+     */
     public function toArray(): array
     {
         return $this->extractedTexts;
@@ -139,7 +116,7 @@ final class UrlToText
 
     public function toJson(): string
     {
-        return json_encode($this->extractedTexts);
+        return json_encode($this->extractedTexts, JSON_THROW_ON_ERROR);
     }
 
     public function toText(): string
