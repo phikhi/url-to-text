@@ -13,9 +13,9 @@ final class UrlToText
 {
     private string $url;
 
-    protected array $allowedTags;
+    private array $allowedTags;
 
-    protected array $deniedTags;
+    private array $deniedTags;
 
     private array $extractedTexts = [];
 
@@ -26,7 +26,7 @@ final class UrlToText
 
     public function from(string $url): static
     {
-        if (! $url) {
+        if ($url === '' || $url === '0') {
             throw new UrlNotProvidedException();
         }
 
@@ -47,7 +47,7 @@ final class UrlToText
 
     private function filterTags(array $tags, string $destinationArray, bool $overwrite = false): static
     {
-        if (! $tags) {
+        if ($tags === []) {
             throw new TagsNotProvidedException();
         }
 
