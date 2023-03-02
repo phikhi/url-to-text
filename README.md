@@ -13,7 +13,7 @@ composer require phikhi/url-to-text
 
 ### Basic usage
 ```php
-use Phikhi\UrlToText;
+use Phikhi\UrlToText\UrlToText;
 
 $text = (new UrlToText())
     ->from('https://phikhi.com')

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+namespace Phikhi\UrlToText;
+
+use DOMXPath;
+use DOMDocument;
 use Phikhi\UrlToText\StreamContext;
 use Phikhi\UrlToText\Exceptions\UrlNotProvidedException;
 use Phikhi\UrlToText\Exceptions\TagsNotProvidedException;
