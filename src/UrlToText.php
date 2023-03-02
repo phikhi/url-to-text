@@ -103,6 +103,8 @@ final class UrlToText
             $this->extractedTexts[] = $this->cleanTextContent($tag->textContent);
         }
 
+        $this->extractedTexts = array_unique($this->extractedTexts);
+
         return $this;
     }
 
